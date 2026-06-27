@@ -7,3 +7,4 @@ dist/
 *.js.map
 
 /src/generated/prisma
+".claude/" 
