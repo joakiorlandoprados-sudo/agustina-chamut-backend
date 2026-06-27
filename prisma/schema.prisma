@@ -1,0 +1,61 @@
+// Agustina Chamut — sistema de reservas
+// Postgres, una sola terapeuta, una sola zona horaria (Europe/Madrid)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum SlotStatus {
+  OPEN
+  BOOKED
+  BLOCKED
+}
+
+model AvailabilitySlot {
+  id        Int        @id @default(autoincrement())
+  date      DateTime   @db.Date
+  startTime String     // "HH:mm"
+  endTime   String     // "HH:mm"
+  status    SlotStatus @default(OPEN)
+  createdAt DateTime   @default(now())
+
+  booking Booking?
+
+  @@unique([date, startTime])
+  @@index([date, status])
+}
+
+model Booking {
+  id          Int      @id @default(autoincrement())
+  slotId      Int      @unique        // ← UNIQUE a nivel BD: segunda inserción falla
+  clientName  String
+  clientPhone String
+  clientEmail String
+  notes       String?
+  createdAt   DateTime @default(now())
+
+  // Token de cancelación pública (link en el email al cliente). Cuid() porque
+  // es URL-safe, opaco, y de longitud fija. Se borra junto con la fila cuando
+  // el cliente cancela, así que un reuso devuelve 404.
+  cancellationToken String   @unique @default(cuid())
+  // null = activa. Marcamos este campo antes de borrar para tener un rastro
+  // en logs; igual borramos la fila (la lógica de cancelación sigue siendo
+  // delete + slot=OPEN, igual que el admin).
+  cancelledAt       DateTime?
+
+  slot AvailabilitySlot @relation(fields: [slotId], references: [id], onDelete: Restrict)
+
+  @@index([createdAt])
+  @@index([cancellationToken])
+}
+
+model AdminUser {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
