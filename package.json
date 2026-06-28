@@ -4,10 +4,10 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "postinstall": "prisma generate",
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "prisma generate && tsc",
-    "start": "node dist/server.js",
+    "postinstall": "npx prisma generate",
+    "dev": "ts-node-dev src/app.ts"
+    "build": "tsc",
+    "start": "node dist/src/app.js",
     "seed": "ts-node --transpile-only prisma/seed.ts",
     "test:concurrency": "ts-node --transpile-only scripts/test-concurrency.ts"
   },
