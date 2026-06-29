@@ -5,9 +5,9 @@
   "main": "dist/server.js",
   "scripts": {
     "postinstall": "npx prisma generate",
-    "dev": "ts-node-dev src/app.ts",
+    "dev": "ts-node-dev src/server.ts",
     "build": "tsc",
-    "start": "node dist/src/app.js",
+    "start": "node dist/src/server.js",
     "seed": "ts-node --transpile-only prisma/seed.ts",
     "test:concurrency": "ts-node --transpile-only scripts/test-concurrency.ts"
   },
@@ -19,6 +19,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@prisma/client": "^7.8.0",
     "@prisma/adapter-pg": "^7.8.0",
     "prisma": "^7.8.0",
     "bcrypt": "^6.0.0",
@@ -30,7 +31,6 @@
     "resend": "^6.14.0"
   },
   "devDependencies": {
-    "@prisma/client": "^7.8.0",
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
